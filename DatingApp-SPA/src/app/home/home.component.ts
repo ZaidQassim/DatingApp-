@@ -2,19 +2,25 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 @Component({
-  selector: "app-value",
-  templateUrl: "./value.component.html",
-  styleUrls: ["./value.component.css"]
+  selector: "app-home",
+  templateUrl: "./home.component.html",
+  styleUrls: ["./home.component.css"]
 })
-export class ValueComponent implements OnInit {
+export class HomeComponent implements OnInit {
+  registerModel = false;
   values: any;
+
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    this.getValues();
+    /* this.getValues(); */
   }
 
-  getValues() {
+  registerToggle() {
+    this.registerModel = true;
+  }
+
+ /*  getValues() {
     this.http.get("http://localhost:5000/api/values").subscribe(
       response => {
         this.values = response;
@@ -23,5 +29,9 @@ export class ValueComponent implements OnInit {
         console.log(error);
       }
     );
+  } */
+
+  cancelRegisterModel(registerModel: boolean) {
+    this.registerModel = registerModel;
   }
 }
