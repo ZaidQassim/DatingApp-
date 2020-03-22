@@ -9,8 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
 using System.IdentityModel.Tokens.Jwt;
-
-
+using AutoMapper;
 
 namespace DatingApp.API.Controllers
 {
@@ -20,12 +19,13 @@ namespace DatingApp.API.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _config;
+        private readonly IMapper _mapper;
 
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
+            _mapper = mapper;
             _config = config;
             _repo = repo;
-
         }
 
 
@@ -55,16 +55,16 @@ namespace DatingApp.API.Controllers
         {
 
             // userneme and password match  wiht stored in hte database 
-            var userFromRepo = await _repo.Login(userForLoginDto.userName.ToLower(), userForLoginDto.password);
+            var userFromRepo = await _repo.Login(userForLoginDto.userName, userForLoginDto.password);
 
             if (userForLoginDto == null)
                 return Unauthorized();
 
             var claims = new[]
             {
-                     new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                     new Claim(ClaimTypes.Name, userFromRepo.Username)
-                };
+                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
+                 new Claim(ClaimTypes.Name, userFromRepo.Username)
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8
                  .GetBytes(_config.GetSection("AppSettings:ToKen").Value));
@@ -82,10 +82,13 @@ namespace DatingApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+
 
             return Ok(new
             {
-                token = tokenHandler.WriteToken(token)
+                token = tokenHandler.WriteToken(token),
+                user
             });
 
 

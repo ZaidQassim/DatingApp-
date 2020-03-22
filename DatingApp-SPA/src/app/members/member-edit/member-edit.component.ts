@@ -15,6 +15,7 @@ export class MemberEditComponent implements OnInit {
   //  to  get editForm of from
   @ViewChild("editForm", { static: true }) editForm: NgForm;
   user: User;
+  photoUrl: string;
 
   // To prevent close the brawser when edit in form
   @HostListener("window:beforeunload", ["$event"])
@@ -35,6 +36,11 @@ export class MemberEditComponent implements OnInit {
     this.router.data.subscribe(data => {
       this.user = data["user"];
     });
+
+    // to  update the main photo for member
+    this.authService.currentPhotoUrl.subscribe(
+      photoUrl => (this.photoUrl = photoUrl)
+    );
   }
 
   updateUSer() {
@@ -50,4 +56,10 @@ export class MemberEditComponent implements OnInit {
         }
       );
   }
+
+ /*  updateMainPhoto(photoUrl) {
+    this.user.photoUrl = photoUrl;
+  } */
+
+  
 }

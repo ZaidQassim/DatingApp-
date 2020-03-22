@@ -1,8 +1,4 @@
-import {
-  BrowserModule,
-  HammerGestureConfig,
-  HAMMER_GESTURE_CONFIG
-} from "@angular/platform-browser";
+import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
@@ -10,6 +6,8 @@ import { FormsModule } from "@angular/forms";
 import { BsDropdownModule, TabsModule } from "ngx-bootstrap";
 import { JwtModule } from "@auth0/angular-jwt";
 import { NgxGalleryModule } from "ngx-gallery";
+import { FileUploadModule } from 'ng2-file-upload';
+
 
 import { AppComponent } from "./app.component";
 import { NavComponent } from "./nav/nav.component";
@@ -31,6 +29,7 @@ import { MemberListResolver } from "./_resolvers/member-list-resolver";
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { MemberEditResolver } from './_resolvers/member-edit-resolver';
 import { PreventUnsavedChanges } from './_guards/prevent-unsaved-changes-guard';
+import { PhotoEditerComponent } from './members/photo-editer/photo-editer.component';
 
 export function tokenGetter() {
   return localStorage.getItem("token");
@@ -54,7 +53,8 @@ export class CustomHammerConfig extends HammerGestureConfig {
     MessagesComponent,
     MemberCardComponent,
     MemberDetailComponent,
-    MemberEditComponent
+    MemberEditComponent,
+    PhotoEditerComponent
   ],
 
   imports: [
@@ -63,6 +63,7 @@ export class CustomHammerConfig extends HammerGestureConfig {
     FormsModule,
     BsDropdownModule.forRoot(),
     NgxGalleryModule,
+    FileUploadModule,
     TabsModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     JwtModule.forRoot({

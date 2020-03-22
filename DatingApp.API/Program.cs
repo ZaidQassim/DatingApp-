@@ -27,7 +27,6 @@ namespace DatingApp.API
                     var context = services.GetRequiredService<DataContext>();
                     context.Database.Migrate();
                     Seed.SeedData(context);
-
                 }
                 catch (Exception ex)
                 {
@@ -36,7 +35,7 @@ namespace DatingApp.API
                 }
             }
             host.Run();
-
+            
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

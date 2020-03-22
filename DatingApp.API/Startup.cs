@@ -38,9 +38,10 @@ namespace DatingApp.API
                 Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
             services.AddCors();
-
+            // Cloudinary Settings to upload images
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            // 
             services.AddAutoMapper(typeof(DatingRepository).Assembly);
-
             services.AddScoped<IAuthRepository, AuthRepoistory>();
             services.AddScoped<IDatingRepository, DatingRepository>();
 
@@ -84,7 +85,7 @@ namespace DatingApp.API
                 });
             }
 
-            // app.UseHttpsRedirection();
+            // app.UseHttpsRedirection(); 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseMvc();
