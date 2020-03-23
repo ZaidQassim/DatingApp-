@@ -1,8 +1,10 @@
 <div class="container mt-4">
   <div class="row">
+
+    <!-- part left -->
     <div class="col-sm-4">
       <div class="card">
-        <img class="card-img-top img-thumbnail" src="{{ user.photoUrl }}" alt="{{ user.knownAs }}">
+        <img class="card-img-top img-thumbnail" src="{{ user.photoUrl || '../../../assets/images/user.png' }}" alt="{{ user.knownAs }}">
 
         <div class="card-body">
           <div>
@@ -32,11 +34,15 @@
 
       </div>
     </div>
+
+
+     <!-- part rigth -->
     <div class="col-sm-8">
 
       <div class="tab-panel">
         <tabset class="member-tabset">
 
+          <!-- tab 1 -->
           <tab heading="About {{  user?.knownAs }}">  
             <h4>Description</h4>
             <p> {{ user.introduction}}</p>
@@ -44,15 +50,18 @@
             <p>{{ user.lookingFor }}</p>
           </tab>
 
+           <!-- tab 2 -->
           <tab heading="Interests">
             <h4>Interests</h4>
             <p>{{ user.interests  }}</p>
           </tab>
 
+           <!-- tab 3 -->
           <tab heading="Photos">
             <ngx-gallery [options]="galleryOptions" [images]="galleryImages"></ngx-gallery>
           </tab>
 
+           <!-- tab 4 -->
           <tab heading="Messages">
             <p>Messages will go here </p>
           </tab>
@@ -61,5 +70,6 @@
       </div>
 
     </div>
+
   </div>
 </div>
