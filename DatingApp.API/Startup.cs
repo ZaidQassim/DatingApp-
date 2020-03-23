@@ -58,6 +58,10 @@ namespace DatingApp.API
                     };
                 });
 
+            // to  add service that get last time after use web site (after use methode GetUser(); )
+            services.AddScoped<logUserActivity>();
+
+
 
         }
 

@@ -1,16 +1,23 @@
-<div class="container mt-4">
+<div class="container mt-4">  
+  <!-- header  -->  
   <div class="row">
+    
+    <!-- title  -->
     <div class="col-sm-4">
       <h4> <span class="text-primary">{{ user.knownAs }}</span> 's Profile </h4>
     </div>
+    <!-- part alert change -->
     <div class="col-sm-8">
       <div *ngIf="editForm.dirty" class="alert alert-info">
         <strong> Information:</strong>  You have made change,  Any unsaved changes will be loast!
       </div>
     </div>
+
   </div>
 
   <div class="row">
+         
+    <!-- part rigth -->
     <div class="col-sm-4">
       <div class="card">
         <img class="card-img-top img-thumbnail" src="{{ photoUrl || '../../../assets/images/user.png' }}" alt="{{ user.knownAs }}">
@@ -25,11 +32,11 @@
           </div>
           <div>
             <strong>last Active:</strong>
-            <p>{{ user.lastActive }}</p>
+            <p>{{ user.lastActive | timeAgo }}</p>
           </div>
           <div>
             <strong>Member Since:</strong>
-            <p>{{ user.created }}</p>
+            <p>{{ user.created | date: "mediumDate" }}</p>
           </div>
         </div>
 
@@ -40,10 +47,11 @@
       </div>
     </div>
 
+    <!-- part rigth -->
     <div class="col-sm-8">
-
-      <div class="tab-panel">
+     <div class="tab-panel">
         <tabset class="member-tabset">
+          <!-- tab 1 -->
           <tab heading="Eit Profile, {{  user?.knownAs }}"> 
 
             <form #editForm="ngForm" id="editForm" (ngSubmit)="updateUSer()">
@@ -68,6 +76,7 @@
             
           </tab>
 
+          <!-- tab 2 -->
           <tab heading="Edit Photos">
             <app-photo-editer [photos]="user.photos" ></app-photo-editer> <!-- (getMemberPhotoChange)="updateMainPhoto($event)" -->
           </tab>
@@ -76,5 +85,6 @@
       </div>
 
     </div>
+
   </div>
 </div>
