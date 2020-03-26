@@ -1,5 +1,6 @@
 namespace DatingApp.API.Helpers
 {
+    // class Settings of account Cloudinary
     public class CloudinarySettings
     {
         public string CloudName { get; set; }

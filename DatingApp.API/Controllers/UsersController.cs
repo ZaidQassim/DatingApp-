@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DatingApp.API.Controllers
 {
-    [ServiceFilter(typeof(logUserActivity))]
+    [ServiceFilter(typeof(logUserActivity))]  // to get last activity for user  
     [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
@@ -26,10 +26,27 @@ namespace DatingApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams)
         {
-            var users = await _repo.GetUSers();
+            // to get userId that loggedIn now 
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            // return info  user that loggedIn now 
+            var userFromRepo = await _repo.GetUser(currentUserId);
+
+            userParams.UserId = currentUserId;
+            // if Userparams is not Gender 
+            if (string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
+            }
+
+            // get list pages the users
+            var users = await _repo.GetUSers(userParams);
+
+            // tell client said by PageNumber and tell Header by info 
             var usersToReturn = _mapper.Map<IEnumerable<UserForListDto>>(users);
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
             return Ok(usersToReturn);
         }
 
