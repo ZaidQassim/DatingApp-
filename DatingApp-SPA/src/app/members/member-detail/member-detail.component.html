@@ -8,8 +8,16 @@
 
         <div class="card-body">
           <div>
-            <strong> Location :</strong>
-            <p> {{ user.city }}, {{ user?.country }}</p>
+            <div class="row">
+              <div class="col-sm-6">
+                <strong> Name's :</strong>
+                <p> {{ user.knownAs }} </p>
+              </div>
+              <div class="col-sm-6">
+                <strong> Location :</strong>
+                <p> {{ user.city }}, {{ user?.country }}</p>
+              </div>
+            </div>
           </div>
           <div>
             <strong>Age:</strong>
@@ -28,7 +36,7 @@
         <div class="card-footer">
           <div class="btn-group d-flex">
             <button class="btn btn-primary w-100"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button>
-            <button class="btn btn-success w-100">Message</button>
+            <button class="btn btn-success w-100" (click)="selectTab(3)">Message</button>
           </div>
         </div>
 
@@ -40,7 +48,7 @@
     <div class="col-sm-8">
 
       <div class="tab-panel">
-        <tabset class="member-tabset">
+        <tabset class="member-tabset" #memberTabs>
 
           <!-- tab 1 -->
           <tab heading="About {{  user?.knownAs }}">  
@@ -63,7 +71,7 @@
 
            <!-- tab 4 -->
           <tab heading="Messages">
-            <p>Messages will go here </p>
+            <app-member-message [recipientId]="user.id"></app-member-message>
           </tab>
         
         </tabset>
@@ -73,3 +81,5 @@
 
   </div>
 </div>
+
+

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { User } from "src/app/_models/user";
 import { AlertifyService } from "src/app/_services/alertify.service";
 import { ActivatedRoute } from "@angular/router";
@@ -9,6 +9,7 @@ import {
   NgxGalleryAnimation
 } from "ngx-gallery";
 import { pipeFromArray } from 'rxjs/internal/util/pipe';
+import { TabsetComponent } from 'ngx-bootstrap';
 
 @Component({
   selector: "app-member-detail",
@@ -16,6 +17,7 @@ import { pipeFromArray } from 'rxjs/internal/util/pipe';
   styleUrls: ["./member-detail.component.css"]
 })
 export class MemberDetailComponent implements OnInit {
+  @ViewChild("memberTabs", { static: true} ) memberTabs: TabsetComponent;
   user: User;
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
@@ -31,6 +33,13 @@ export class MemberDetailComponent implements OnInit {
       this.user = data["user"];
     });
 
+    // active tabs the messsage on click from message component
+    this.router.queryParams.subscribe(params =>{
+      const selectedTab = params["tab"];
+      this.memberTabs.tabs[selectedTab > 0 ? selectedTab : 0].active = true;
+    })
+
+
     this.galleryOptions = [
       {
         width: "500px",
@@ -42,18 +51,9 @@ export class MemberDetailComponent implements OnInit {
       }
     ];
     this.galleryImages = this.getImages();
+    
   }
 
-  /*  loadUser() {
-    this.userService.getUser(+this.router.snapshot.params["id"]).subscribe(
-      (user: User) => {
-        this.user = user;
-      },
-      error => {
-        this.alertify.error(error);
-      }
-    );
-  } */
 
   getImages() {
     const imageUrls = [];
@@ -68,6 +68,24 @@ export class MemberDetailComponent implements OnInit {
     return imageUrls;
   }
 
+
+  // to go any tab 
+  selectTab(tabId: number){
+    this.memberTabs.tabs[tabId].active = true;
+  }
+
 }
 
  
+
+
+/*  loadUser() {
+    this.userService.getUser(+this.router.snapshot.params["id"]).subscribe(
+      (user: User) => {
+        this.user = user;
+      },
+      error => {
+        this.alertify.error(error);
+      }
+    );
+  } */
