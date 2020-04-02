@@ -20,13 +20,13 @@ namespace DatingApp.API.Models
         public string City { get; set; }
         public string Country { get; set; }
 
-        public ICollection<Photo> Photos { get; set; }
+        public virtual ICollection<Photo> Photos { get; set; }
 
-        public ICollection<like> Likers { get; set; }
-        public ICollection<like> Likees { get; set; }
+        public virtual ICollection<like> Likers { get; set; }
+        public virtual ICollection<like> Likees { get; set; }
 
-        public ICollection<Message> MessagesSent { get; set; }
-        public ICollection<Message> MessagesReceived { get; set; }
+        public virtual ICollection<Message> MessagesSent { get; set; }
+        public virtual ICollection<Message> MessagesReceived { get; set; }
 
 
 
