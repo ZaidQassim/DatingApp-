@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace DatingApp.API.Controllers
 {
     [ServiceFilter(typeof(logUserActivity))]  // to get last activity for user  
-    [Authorize]
     [Route("api/[Controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -33,7 +32,7 @@ namespace DatingApp.API.Controllers
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             // return info  user that loggedIn now 
-            var userFromRepo = await _repo.GetUser(currentUserId);
+            var userFromRepo = await _repo.GetUser(currentUserId, true);
 
             userParams.UserId = currentUserId;
             // if Userparams is not Gender 
@@ -55,7 +54,10 @@ namespace DatingApp.API.Controllers
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await _repo.GetUser(id);
+            var isCurrentUser = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value) == id;
+
+            var user = await _repo.GetUser(id, isCurrentUser); 
+
             var userToReturn = _mapper.Map<UserForDetailedDto>(user);
             return Ok(userToReturn);
         }
@@ -67,7 +69,7 @@ namespace DatingApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var userForRepo = await _repo.GetUser(id);
+            var userForRepo = await _repo.GetUser(id, true);
             _mapper.Map(userForUpdateDto, userForRepo);
 
             if (await _repo.SaveAll())
@@ -88,7 +90,7 @@ namespace DatingApp.API.Controllers
             if (like != null)
                 return BadRequest("You already Like this user");
 
-            if (await _repo.GetUser(recipientId) == null)
+            if (await _repo.GetUser(recipientId, false) == null)
                 return NotFound();
 
             like = new like

@@ -14,7 +14,6 @@ using System.Linq;
 
 namespace DatingApp.API.Controllers
 {
-    [Authorize]
     [Route("api/users/{userId}/photos")]
     [ApiController]
     public class PhotosController : ControllerBase
@@ -53,7 +52,7 @@ namespace DatingApp.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var userForRepo = await _repo.GetUser(userId);
+            var userForRepo = await _repo.GetUser(userId, true);
 
             var file = photoForCreationDto.File;
 
@@ -101,7 +100,7 @@ namespace DatingApp.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var user = await _repo.GetUser(userId);  // get the info user
+            var user = await _repo.GetUser(userId, true);  // get the info user
 
             // to valdation of photo is exist for user
             if (!user.Photos.Any(p => p.Id == id))  // 
@@ -135,7 +134,7 @@ namespace DatingApp.API.Controllers
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var user = await _repo.GetUser(userId);  // get the info user
+            var user = await _repo.GetUser(userId, true);  // get the info user
 
             // to valdation of photo is exist for user
             if (!user.Photos.Any(p => p.Id == id))  // 

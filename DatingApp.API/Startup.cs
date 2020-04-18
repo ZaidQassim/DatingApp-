@@ -13,6 +13,10 @@ using Microsoft.AspNetCore.Http;
 using DatingApp.API.Helpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using DatingApp.API.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace DatingApp.API
 {
@@ -42,8 +46,8 @@ namespace DatingApp.API
             // db connection string my sql   
             services.AddDbContext<DataContext>(x =>
             {
-               x.UseLazyLoadingProxies();
-               x.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
+                x.UseLazyLoadingProxies();
+                x.UseMySql(Configuration.GetConnectionString("DefaultConnection"));
             });
             ConfigureServices(services);
         }
@@ -51,20 +55,19 @@ namespace DatingApp.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-            .AddJsonOptions(opt =>
+            // to reset settings for padssword indetity 
+            IdentityBuilder bulider = services.AddIdentityCore<User>(opt =>
             {
-                opt.SerializerSettings.ReferenceLoopHandling =
-                Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequiredLength = 4;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
             });
-
-            services.AddCors();
-            // Cloudinary Settings to upload images
-            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
-            // 
-            services.AddAutoMapper(typeof(DatingRepository).Assembly);
-            services.AddScoped<IAuthRepository, AuthRepoistory>();
-            services.AddScoped<IDatingRepository, DatingRepository>();
+            bulider = new IdentityBuilder(bulider.UserType, typeof(Role), bulider.Services);
+            bulider.AddEntityFrameworkStores<DataContext>();
+            bulider.AddRoleValidator<RoleValidator<Role>>();
+            bulider.AddRoleManager<RoleManager<Role>>();
+            bulider.AddSignInManager<SignInManager<User>>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -78,6 +81,34 @@ namespace DatingApp.API
                         ValidateAudience = false
                     };
                 });
+
+            // add roles acsses pages
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequiredAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
+                options.AddPolicy("VipOnly", policy => policy.RequireRole("VIP"));
+            });
+
+
+            services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            .AddJsonOptions(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling =
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            services.AddCors();
+            // Cloudinary Settings to upload images
+            services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+            // 
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
+            services.AddScoped<IDatingRepository, DatingRepository>();
 
             // to  add service that get last time after use web site (after use methode GetUser(); )
             services.AddScoped<logUserActivity>();

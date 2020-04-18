@@ -52,7 +52,8 @@ export class PhotoEditerComponent implements OnInit {
           url: res.url,
           dateAdded: res.dateAdded,
           description :  res.description, 
-          isMain : res.isMain
+          isMain : res.isMain,
+          isApproved : res.isApproved
         };
         this.photos.push(photo); 
         //  if it was main photo will  change Member Photo on all componentes
